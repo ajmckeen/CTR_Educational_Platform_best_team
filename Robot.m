@@ -59,9 +59,6 @@ classdef Robot < handle
         function s = get_links(self, rho)
             % d: Length of the curved section for each tube [m]
             % rho: Starting points of the curved sections for each tube [m]
-
-            % Number of tubes
-            self.num_tubes
             
             % Initialize an array to hold the transition points
             transitionPoints = zeros(1, 2 * self.num_tubes);
@@ -151,6 +148,7 @@ classdef Robot < handle
                 d(tubeIdx) = self.tubes(tubeIdx).d;
 
             end
+            
 
 
             function curvatureInputs = prepareLinkCurvatureInputs(E, OD, ID, k, theta, rho, d)
@@ -165,8 +163,6 @@ classdef Robot < handle
                 % d: Length of the curved sections for each tube [m]
                 
                 % Number of tubes
-    
-                disp('hi')
                 nTubes = length(rho);
                 
                 % Calculate the transition points (start and end of curved section)
@@ -230,7 +226,6 @@ classdef Robot < handle
                 % k: Precurvatures of the tubes [m^-1]
                 % theta: Rotations of the tubes [rad]
                 
-            
                 % Number of tubes
                 nTubes = length(OD);
                 
@@ -259,15 +254,14 @@ classdef Robot < handle
                 gamma = sum_EIk_sinTheta / sum_EI;
             end
 
-
             curvatureInputs = prepareLinkCurvatureInputs(E, OD, ID, k, alpha, rho, d);
-
+            num_links = length(curvatureInputs);
             % Initialize arrays to store chi and gamma for each link
-            chi_all = zeros(1, self.num_tubes);
-            gamma_all = zeros(1, self.num_tubes);
+            chi_all = zeros(1, num_links);
+            gamma_all = zeros(1, num_links);
 
             % Loop through each link and calculate chi and gamma
-            for linkIdx = 1:self.num_tubes
+            for linkIdx = 1:num_links
                 % Get the curvature inputs for the current link
                 linkData = curvatureInputs{linkIdx};
                 
@@ -292,7 +286,7 @@ classdef Robot < handle
 
             % Loop through each link and calculate phi and K
             phi_sum = 0;
-            for j = 1:self.num_tubes
+            for j = 1:num_links
                 % Calculate the link rotation phi_j
                 next_phi = atan2(gamma_all(j), chi_all(j));
                 phi(j) = next_phi - phi_sum;
@@ -309,14 +303,10 @@ classdef Robot < handle
         % Returns a 4x4 transformation matrix from base frame to end
         % effector
         function T = calculate_transform(self, s, phi, K)
-            s
-            phi
-            K
             % Initialize T as the identity matrix (4x4)
             T = eye(4);
             
-            % Loop through each link]
-            length(s)
+            % Loop through each link
             for i = 1:length(s)
                 % Get the i-th link parameters
                 l_i = s(i);   % Link length
@@ -330,7 +320,7 @@ classdef Robot < handle
                     sin(phi_i)*cos(k_i*l_i),  cos(phi_i),    sin(phi_i)*sin(k_i*l_i),  0;
                     -sin(k_i*l_i),            0,            cos(k_i*l_i),              l_i;
                     0,                        0,            0,                         1
-                    ]
+                    ];
                 else
                     Ti_0 = [
                     cos(phi_i)*cos(k_i*l_i),  -sin(phi_i),   cos(phi_i)*sin(k_i*l_i),  (cos(phi_i)*(1 - cos(k_i*l_i)))/k_i;
