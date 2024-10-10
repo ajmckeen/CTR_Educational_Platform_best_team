@@ -35,6 +35,9 @@ classdef Robot < handle
 
             % Now we calculate the phi and kappa values
             [self.phi,self.kappa] = calculate_phi_and_kappa(self, theta, rho);
+            disp('aaaaaaaaaaaaaaaaaaaaaaa')
+            self.phi
+            rad2deg(self.phi(1))
 
             % Finally we calculate the base to end effector transform
             T = calculate_transform(self, self.lls, self.phi, self.kappa);

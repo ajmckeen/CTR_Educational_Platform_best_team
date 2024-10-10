@@ -13,15 +13,15 @@ tubes = [tube1, tube2, tube3];
 robot = Robot(tubes);
 
 % q values for testing with two tubes
-% q_var = [0, 0, 0, 0; 
-%          20, 50, 45, -45; 
-%          30, 35, -35, 20];
+% q_var = [0, 0, 60, 60; 
+%          0, 0, 60, 0; 
+%          0, 0, 60, -30];
 
 
 % q values for testing with three tubes
- q_var = [0, 0, 0, 0, 0, 0;
-          20, 50, 70, 45, -45, 45; 
-          30, 35, 50, -35, 20, -10];
+ q_var = [0, 0, 0, 60, 60, 0;
+          0, 0, 0, 60, 0, 0; 
+          0, 0, 0, 60, -30, 0];
 
 T = {};
 for i = 1:size(q_var,1)
